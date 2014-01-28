@@ -6,10 +6,10 @@ stole it and added capture groups for the various parts. All credit for that reg
 ### Example Usage of uri.js
 
 ```javascript
-var URI = require( './uri.js' )
-var input = 'http://user:password@example.com:8080/some/path/to/somewhere?search=regex&order=desc#fragment'
+var URI = require('./uri.js');
+var input = 'http://user:password@example.com:8080/some/path/to/somewhere?search=regex&order=desc#fragment';
 
-var uri = new URI( input ) // =>
+var uri = new URI(input); // =>
 {
   protocol:  'http',                      // match[1]
   slashes:   '//',                        // match[2]
