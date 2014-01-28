@@ -1,0 +1,6 @@
+# Editor backup files
+*~
+*.bak
+
+# npm/grunt temporaries
+node_modules/
