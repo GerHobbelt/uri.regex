@@ -5,11 +5,17 @@
 #  - added capture groups
 #  - added absolute and relative paths as means to specify a (relative, same host only) URI
 #
-(                                                                   # absolute-ref URI             #1 - entire URI except query and fragment
-  ([A-Za-z][A-Za-z0-9+\-.]*) :                                      # scheme ":"                   #2 - scheme
-  (?: (//)                                                          # hier-part                    #3 - slashes
-    (?: ((?:[A-Za-z0-9\-._~!$&'()*+,;=:]|%[0-9A-Fa-f]{2})*) @)?     # authority   (userinfo "@")   #4 - userinfo
-    (                                                               # host                         #5 - host
+
+# catch context as well:
+^ 
+([\s\S]*?)                                                          # non-greedy grab of the non-matching prelude       #1
+
+(                                                                   # URI                          #2
+(                                                                   # absolute-ref URI             #3 - entire URI except query and fragment
+  ([A-Za-z][A-Za-z0-9+\-.]*) :                                      # scheme ":"                   #4 - scheme
+  (?: (//)                                                          # hier-part                    #5 - slashes
+    (?: ((?:[A-Za-z0-9\-._~!$&'()*+,;=:]|%[0-9A-Fa-f]{2})*) @)?     # authority   (userinfo "@")   #6 - userinfo
+    (                                                               # host                         #7 - host
       \[                                                            #   IP literal
       (?:
         (?:                                                         #     IPv6 address
@@ -35,20 +41,20 @@
          (?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)
     | (?:[A-Za-z0-9\-._~!$&'()*+,;=]|%[0-9A-Fa-f]{2})*              #   reg-name
     )
-    (?: : ([0-9]*) )?                                               #   [ ":" port ]               #6 - port
-    ((?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*)    # path-abempty                 #7 - path
-  | ( /                                                             # path-absolute                #8 - path
+    (?: : ([0-9]*) )?                                               #   [ ":" port ]               #8 - port
+    ((?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*)    # path-abempty                 #9 - path
+  | ( /                                                             # path-absolute                #10 - path
       (?:    (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})+
         (?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*
     )?)
-  | (        (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})+     # path-rootless                #9 - path
+  | (        (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})+     # path-rootless                #11 - path
       (?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*)
   |                                                                 # path-empty                   #- - empty path
   )
 |                                                                   # relative-ref URI
-  (?: (//)                                                          # hier-part                    #10 - slashes
-    (?: ((?:[A-Za-z0-9\-._~!$&'()*+,;=:]|%[0-9A-Fa-f]{2})*) @)?     # authority   (userinfo "@")   #11 - userinfo
-    (                                                               # host                         #12 - host
+  (?: (//)                                                          # hier-part                    #12 - slashes
+    (?: ((?:[A-Za-z0-9\-._~!$&'()*+,;=:]|%[0-9A-Fa-f]{2})*) @)?     # authority   (userinfo "@")   #13 - userinfo
+    (                                                               # host                         #14 - host
       \[                                                            #   IP literal
       (?:
         (?:                                                         #     IPv6 address
@@ -74,13 +80,13 @@
          (?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)
     | (?:[A-Za-z0-9\-._~!$&'()*+,;=]|%[0-9A-Fa-f]{2})*              #   reg-name
     )
-    (?: : ([0-9]*) )?                                               #   [ ":" port ]               #13 - port
-    ((?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*)    # path-abempty                 #14 - path
-  | ( /                                                             # path-absolute                #15 - path
+    (?: : ([0-9]*) )?                                               #   [ ":" port ]               #15 - port
+    ((?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*)    # path-abempty                 #16 - path
+  | ( /                                                             # path-absolute                #17 - path
       (?:    (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})+
         (?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*
     )?)
-  | (        (?:[A-Za-z0-9\-._~!$&'()*+,;=@] |%[0-9A-Fa-f]{2})+     # path-noscheme                #16 - path
+  | (        (?:[A-Za-z0-9\-._~!$&'()*+,;=@] |%[0-9A-Fa-f]{2})+     # path-noscheme                #18 - path
       (?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*)
   |                                                                 # path-empty                   #- - empty path
   )
@@ -92,16 +98,21 @@
                                                                     # / path-empty      ; zero characters
                                                                     #
                                                                     # RFC-3986 URI component: path
-  ((?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*)      # path-abempty                 #17 - path
-| ( /                                                               # path-absolute                #18 - path
+  ((?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*)      # path-abempty                 #19 - path
+| ( /                                                               # path-absolute                #20 - path
     (?:    (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})+
       (?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*
   )?)
-| (        (?:[A-Za-z0-9\-._~!$&'()*+,;=@] |%[0-9A-Fa-f]{2})+       # path-noscheme                #19 - path
+| (        (?:[A-Za-z0-9\-._~!$&'()*+,;=@] |%[0-9A-Fa-f]{2})+       # path-noscheme                #21 - path
     (?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*)
-| (        (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})+       # path-rootless                #20 - path
+| (        (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})+       # path-rootless                #22 - path
     (?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*)
 |                                                                   # path-empty                   #- - empty path
 )
-(?:\? ((?:[A-Za-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9A-Fa-f]{2})*) )?     # [ "?" query ]                #21 - query
-(?:\# ((?:[A-Za-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9A-Fa-f]{2})*) )?     # [ "#" fragment ]             #22 - fragment
+(?:\? ((?:[A-Za-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9A-Fa-f]{2})*) )?     # [ "?" query ]                #23 - query
+(?:\# ((?:[A-Za-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9A-Fa-f]{2})*) )?     # [ "#" fragment ]             #24 - fragment
+)
+
+# catch context as well:
+([\s\S]*)                                                           # greedy grab of the non-matching postlude       #25
+$

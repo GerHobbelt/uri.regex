@@ -4,10 +4,19 @@ var fs = require('fs');
 var pattern = fs.readFileSync(__dirname + '/uri.regex', { encoding: 'utf8' });
 
 var compressed_pattern = pattern
-	// Remove comments
-	.replace( /(^|\s)#\s.+/g, '' )
+	// Remove comments 
+	//
+	// WARNING: \s is NOT equal to [ \t] and eats the first line (LF) nuking the regex, hence we use the more strict [ \t] here instead!
+	.replace( /(^|\s)#([ \t].*)?/g, '' );
+
+//console.log("compression #1\n", compressed_pattern);
+
+compressed_pattern = compressed_pattern
 	// Collapse whitespace
 	.replace( /\s+/g, '' );
+
+//console.log("compression #2\n", compressed_pattern);
+
 
 var pattern_comment = "    // " + pattern.replace( /[\n]/g , "\n    // " );
 
