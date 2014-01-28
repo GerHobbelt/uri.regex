@@ -3,11 +3,13 @@ var fs = require('fs');
 
 var pattern = fs.readFileSync(__dirname + '/uri.regex', { encoding: 'utf8' });
 
-pattern = pattern
+var compressed_pattern = pattern
 	// Remove comments
 	.replace( /(^|\s)#\s.+/g, '' )
 	// Collapse whitespace
 	.replace( /\s+/g, '' );
+
+var pattern_comment = "    // " + pattern.replace( /[\n]/g , "\n    // " );
 
 fs.readFile(__dirname + '/uri.js', { encoding: 'utf8' }, function (err, data) {
 	if (err) throw err;
@@ -22,7 +24,10 @@ fs.readFile(__dirname + '/uri.js', { encoding: 'utf8' }, function (err, data) {
 	// ( https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace )
 	s = s.replace(/\/\/---regex---[\s\S]*\/\/---\/regex---/, function () {
 		return "//---regex---\n" +
-			   "    URI.pattern = new RegExp(" + JSON.stringify(pattern) +  ");\n" +
+		       "    //\n" + 
+			   pattern_comment + "\n" +
+		       "    //\n" + 
+			   "    URI.pattern = new RegExp(" + JSON.stringify(compressed_pattern) +  ");\n" +
 			   "    //---/regex---";
 	});
 

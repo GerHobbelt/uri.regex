@@ -21,3 +21,27 @@ var uri = new URI(input); // =>
   hash:      'fragment'                   // match[10]
 }
 ```
+
+### API
+
+    function URI(input, options)
+
+Return an URI object containing the parsed elements of the uri string passed as `input`.
+
+If the passed string is not a legal uri, then either an exception is thrown or
+the boolean value FALSE is returned, depending on whether you specified the
+`nothrow` option.
+
+*Notes*: the function can be invoked as is or as a constructor; in both scenarios
+`URI()` will ensure a URI instance (object) containing the decoded URI components
+is returned:
+
+- protocol
+- slashes
+- authority
+- host
+- port
+- path
+- query
+- hash
+
